@@ -50,6 +50,7 @@ For this project, the choice of the fully connected layer units are 64 and 32. I
 ## Performance between different implementation
 
 ### DQN without soft update
+![DQN without soft update](assets/DQN without soft update.png )
 
 ### DQN with soft update
 
