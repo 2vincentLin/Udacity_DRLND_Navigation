@@ -50,23 +50,23 @@ For this project, the choice of the fully connected layer units are 64 and 32. I
 ## Performance between different implementation
 
 ### DQN without soft update
-The agent solved the environment in 818 episodes, but the average reward over 100 episodes doesn't improved till 2000 episodes finished.
+The agent solved the environment in 818 episodes, but the average reward over 100 episodes doesn't improved till 2000 episodes finished.  
 ![DQN_without_soft_update](assets/DQN_without_soft_update.png)
 
 ### DQN with soft update
-The agent solved the environment in 424 episodes, the best average reward over 100 episode is close to 16.
+The agent solved the environment in 424 episodes, the best average reward over 100 episode is close to 16.  
 ![DQN_with_soft_update](assets/DQN_with_soft_update.png)
 
 ### double DQN
-The agent solved the environment in 420 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN.
+The agent solved the environment in 420 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN.  
 ![Double_DQN_with_soft_update](assets/Double_DQN_with_soft_update.png)
 
 ### dueling DQN
-The agent solved the environment in 427 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN.
+The agent solved the environment in 427 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN.  
 ![Dueling_DQN](assets/Dueling_DQN.png)
 
 ### dueling and double DQN
-The agent solved the environment in 461 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN and slightly better than each of dueling or double DQN.
+The agent solved the environment in 461 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN and slightly better than each of dueling or double DQN.  
 ![Dueling_and_Double_DQN](assets/Dueling_and_Double_DQN.png)
 
 ### priority experience replay agent
