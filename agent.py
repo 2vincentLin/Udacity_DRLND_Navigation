@@ -206,15 +206,17 @@ class SumTree:
     However, this implementation seems having bug, sometimes it'll return empty data (haven't written yet),
     so I add a max_write to indicate max dataIdx that has data, and if self._retrieve() returns index > max_write,
     return max_write instead.
+    Also, I add data_p for PriorityBuffer to fast calculate the max priority.
 
     '''
-    write = 0
-    max_write = 0  # it records the last self.data id that has data
 
     def __init__(self, capacity):
         self.capacity = capacity
         self.tree = np.zeros(2 * capacity - 1)
         self.data = np.zeros(capacity, dtype=object)
+        self.data_p = np.zeros(capacity, dtype= np.float) # for calculating max(priorities)
+        self.write = 0 # record next dataIdx that writes data, if it == capacity, start from 0 again.
+        self.max_write = 0 # it records the last self.data id that has data
 
     def _propagate(self, idx, change):
         parent = (idx - 1) // 2
@@ -237,10 +239,14 @@ class SumTree:
     def total(self):
         return self.tree[0]
 
+    def get_max_data_p(self):
+        return max(self.data_p)
+
     def add(self, p, data):
         idx = self.write + self.capacity - 1
 
         self.data[self.write] = data
+        self.data_p[self.write] = p
         self.max_write = max(self.max_write, self.write)
         self.update(idx, p)
 
@@ -251,7 +257,8 @@ class SumTree:
 
     def update(self, idx, p):
         change = p - self.tree[idx]
-
+        dataIdx = idx - self.capacity + 1
+        self.data_p[dataIdx] = p
         self.tree[idx] = p
         self._propagate(idx, change)
 
@@ -279,11 +286,11 @@ class PriorityBuffer():
         self.memory = SumTree(buffer_size)
         self.sampled_idx = None  # record sampled index, use it when update
 
-    def _get_priority(self, error, epi=0.0):
+    def _get_priority(self, error, epi=EPI):
         '''
         this function returns p = (error + epi) ** alpha
         :param error: td error
-        :param epi: epsilon, small positive number. when updating it, it should be zero.
+        :param epi: epsilon, small positive number.
         :return: number
         '''
         return (np.abs(error) + epi) ** ALPHA
@@ -303,14 +310,18 @@ class PriorityBuffer():
 
     def add(self, state, action, reward, next_state, done, error=1):
         '''
-        this function add transition and its priority to PER
+        this function add transition and its priority to PER, for first data added, set priority = 1.0.
+        when add new experiences, priority should be max(all stored experiences) to get the higher chance to be sampled.
         :param error: when adding it, setting error =1
         :return: None
         '''
-        e = dict({'state': state, 'action': action, 'reward': reward, 'next_state': next_state, 'done': done})
-        p = self._get_priority(error, EPI)
-        self.memory.add(p, e)
-
+        # using dict for readability
+        e = dict({'state':state, 'action':action, 'reward':reward, 'next_state':next_state, 'done':done})
+        max_p = self.memory.get_max_data_p()
+        if max_p == 0:
+            self.memory.add(1.0, e)
+        else:
+            self.memory.add(max_p, e)
     def sample(self):
         '''
         in the original PER paper, the author uses stratified sampling, that is, get batch size segments,
