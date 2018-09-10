@@ -1,4 +1,4 @@
-# Implementation
+# Implementation and performance
 
 ## Algorithm
 
@@ -70,3 +70,11 @@ The agent solved the environment in 461 episodes, the best average reward over 1
 ![Dueling_and_Double_DQN](assets/Dueling_and_Double_DQN.png)
 
 ### priority experience replay agent
+
+
+## 
+
+
+# reference 
+
+[^1]: [DQN with experience replay](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
