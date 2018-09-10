@@ -1,4 +1,4 @@
-# Implementation and performance
+# Performance
 
 ## Algorithm
 
@@ -69,12 +69,37 @@ The agent solved the environment in 427 episodes, the best average reward over 1
 The agent solved the environment in 461 episodes, the best average reward over 100 episode is over 16. Its performance is more stable comparing to normal DQN and slightly better than each of dueling or double DQN.  
 ![Dueling_and_Double_DQN](assets/Dueling_and_Double_DQN.png)
 
-### priority experience replay agent
+### Prioritized experienced replay agent
 
 
-## 
+## implememtation
 
+### DQN with experience replay
+The algorithm comes from the original paper, and most of my codes are from Udacity DRLND course. However, in the original paper, the author didn't mention soft update, so I actually implemented two agents, one is with sofe update, one is not. Based on my experiments, DQN with soft update is much better than DQN without soft update, at least in this project.
+![DQN with experience replay](assets/DQN_algorithm.png)
+[source](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
+
+### Dueling DQN
+
+![Dueling_DQN_architecture](assets/Dueling_DQN_architecture.png)
+[source](https://arxiv.org/abs/1511.06581)
+![Dueling_DQN_algorithm](assets/Dueling_DQN_algorithm.png)
+[source](https://arxiv.org/abs/1511.06581)
+
+### Double DQN
+
+![Double_DQN_algorithm](assets/Double_DQN_algorithm.png)
+[source](https://arxiv.org/abs/1509.06461)
+
+### Prioritized experienced replay
+
+![Prioritized_experienced_replay_algorithm.png](assets/Prioritized_experienced_replay_algorithm)
+[source](https://arxiv.org/abs/1511.05952)
 
 # reference 
 
-[^1]: [DQN with experience replay](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
+1. [DQN with experience replay](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
+2. [Dueling DQN](https://arxiv.org/abs/1511.06581)
+3. [Double DQN](https://arxiv.org/abs/1509.06461)
+4. [Prioritized experienced replay](https://arxiv.org/abs/1511.05952)
+
