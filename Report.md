@@ -81,9 +81,9 @@ The algorithm comes from the original paper, and most of my codes are from Udaci
 
 ### Dueling DQN
 
-![Dueling_DQN_architecture](assets/Dueling_DQN_architecture.png)
-[source](https://arxiv.org/abs/1511.06581)
-![Dueling_DQN_algorithm](assets/Dueling_DQN_algorithm.png)
+![Dueling_DQN_architecture](assets/Dueling_DQN_architecture.png)  
+[source](https://arxiv.org/abs/1511.06581)  
+![Dueling_DQN_algorithm](assets/Dueling_DQN_algorithm.png)  
 [source](https://arxiv.org/abs/1511.06581)
 
 ### Double DQN
@@ -93,7 +93,7 @@ The algorithm comes from the original paper, and most of my codes are from Udaci
 
 ### Prioritized experienced replay
 
-![Prioritized_experienced_replay_algorithm.png](assets/Prioritized_experienced_replay_algorithm)
+![Prioritized_experienced_replay_algorithm](assets/Prioritized_experienced_replay_algorithm.png)
 [source](https://arxiv.org/abs/1511.05952)
 
 # reference 
