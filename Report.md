@@ -14,10 +14,12 @@ The choice of the hyperparameters is as follows.
 - GAMMA = 0.99
 - UPDATE_EVERY = 4
 - TAU = 0.001
-- ALPHA = 1
+- ALPHA = 0.6
 - EPI = 0.001
-- BETA = 1
-- ITA = 0.25
+- BETA = 0.4
+- ITA = 0.01
+
+ALPHA, EPI, BETA and ITA are for prioritized experience replay agent. BETA starts from 0.4, everytime the PERagent samples, BETA \*= 1.01 until it equals 1.
 
 ## model architecture
 
@@ -70,12 +72,17 @@ The agent solved the environment in 461 episodes, the best average reward over 1
 ![Dueling_and_Double_DQN](assets/Dueling_and_Double_DQN.png)
 
 ### Prioritized experienced replay agent
-Although I spend a lot of time to tune hyperparameters, the PER agent hardly solves the environment within 2000 episodes, most of the time it stuck at 10 for average reward over 100 episode.
+Although I spend a lot of time to tune hyperparameters, the PER agent hardly solves the environment within 2000 episodes, most of the time it stuck at 10 for average reward over 100 episode. Even if it can solve the environment, the average performances aren't as good as agent with regular experience replay. Besides using schduled BETA, I even tried schduled ALPHA, that is, after certain amount of time, ALPHA will equal 0 (PERagent becomes regular agent), still, the average performances aren't good enough.
+
+## Future idea
+
+In theory, PERagent should have better performance than regular agent, however, in my experiements, this is not the case. I am guessing this is the same problem when first time I tried to solve the environment: wrong hyperparameters(I use [256, 128] hidden units for the network, then the model learns nothing after 2000 episodes). More time and computing power needed to search the hyperparameters space for better performance for PERagent.
 
 ## implementation reference
 
 ### DQN with experience replay
 The algorithm comes from the original paper, and most of my codes are from Udacity DRLND course. However, in the original paper, the author didn't mention soft update, so I implemented two agents, one is with soft update, one is not. Based on my experiments, DQN with soft update is much better than DQN without soft update, at least in this project.
+
 ![DQN with experience replay](assets/DQN_algorithm.png)
 [source](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
 
