@@ -22,6 +22,14 @@ You also need to download Udacity environment for banana collector game, the lin
 
 download the environment you need and put banana.exe in the same folder as the notebook.
 
-### How to run the notebook
+### How to use the notebook
 
-If you wish to retrain the agent or just see the how to saved agent performs, you can just run codes from 
+#### for training your own agent and watch it play
+
+Open the train_and_replay.ipynb, follow the instruction.
+
+#### just want to know the performance between different implementation and algorithm
+
+Open Report.ipynb
+
+**Everytime you run the UnityEnvironment, you'll see it appear on your screen, you should run `env.close()` before shuting down the notebook, otherwise you might have to restart the os to restart the UnityEnvironment.**
