@@ -13,10 +13,11 @@ BATCH_SIZE = 64
 GAMMA = 0.99
 UPDATE_EVERY = 4
 TAU = 0.001
-ALPHA = 1
+ALPHA = 0.6
 EPI = 0.001
-BETA = 1
-ITA = 0.25
+BETA_START = 0.4
+BETA_END = 1
+ITA = 0.01
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -246,7 +247,7 @@ class SumTree:
         idx = self.write + self.capacity - 1
 
         self.data[self.write] = data
-        self.data_p[self.write] = p
+
         self.max_write = max(self.max_write, self.write)
         self.update(idx, p)
 
@@ -257,9 +258,9 @@ class SumTree:
 
     def update(self, idx, p):
         change = p - self.tree[idx]
+        self.tree[idx] = p
         dataIdx = idx - self.capacity + 1
         self.data_p[dataIdx] = p
-        self.tree[idx] = p
         self._propagate(idx, change)
 
     def get(self, s):
@@ -268,7 +269,6 @@ class SumTree:
 
         # for some case that algorithm retrieves dataIdx > self.max_write
         if dataIdx > self.max_write:
-            #             print(' \n retrieve data from empty slot \n', self.data[dataIdx], '\n after revised \n', self.data[self.max_write])
             dataIdx = self.max_write
             idx = dataIdx - 1 + self.capacity
 
@@ -285,6 +285,12 @@ class PriorityBuffer():
         self.batch_size = batch_size
         self.memory = SumTree(buffer_size)
         self.sampled_idx = None  # record sampled index, use it when update
+        self.alpha = ALPHA
+        self.beta = BETA_START
+        if BETA_START == BETA_END:
+            self.fixed_beta = True
+        else:
+            self.fixed_beta = False
 
     def _get_priority(self, error, epi=EPI):
         '''
@@ -295,7 +301,11 @@ class PriorityBuffer():
         '''
         return (np.abs(error) + epi) ** ALPHA
 
-    def _get_weights(self, p, beta, N=BUFFER_SIZE):
+    def _beta(self):
+        self.beta = min(self.beta * 1.01, BETA_END)
+        return self.beta
+
+    def _get_weights(self, p, N=BUFFER_SIZE):
         '''
         return importance sampling weight w_j = (N*P)**-beta / max w_i
         :param p: priority array / sum, P(i) = (p_j)**alpha / sum((p_j)**alpha)
@@ -303,7 +313,10 @@ class PriorityBuffer():
         :param N: buffer size
         :return: torch.tensor with size = [N]
         '''
-        weights = (N * p) ** -beta
+        if self.fixed_beta:
+            weights = (N * p) ** -self.beta
+        else:
+            weights = (N * p) ** -self._beta()
         max_w = np.max(weights)
         weights = weights / max_w  # dtype = object
         return torch.from_numpy(weights.astype(np.float32)).float().to(device)
@@ -336,7 +349,7 @@ class PriorityBuffer():
         experiences = batch[:, 2]
         self.sampled_idx = batch[:, 0] # record the sampled id, so we know which ones to update.
         probs = batch[:, 1] / self.memory.total()
-        weights = self._get_weights(probs, BETA)
+        weights = self._get_weights(probs)
 
         states = torch.from_numpy(np.vstack([e['state'] for e in experiences if e is not None])).float().to(device)
         actions = torch.from_numpy(np.vstack([e['action'] for e in experiences if e is not None])).long().to(device)
